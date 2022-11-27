@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>381</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Профсоюз.Льготы</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background: rgb(240, 240, 240)</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>381</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>36</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: rgb(254, 127, 94);
+color: 'white'</string>
+   </property>
+   <property name="text">
+    <string>     Профсоюз.Льготы</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>361</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: rgb(240, 240, 240);
+color: rgb(254, 127, 94)</string>
+   </property>
+   <property name="text">
+    <string>Выберите пользователя:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="user_name">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>361</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: rgb(220, 220, 220);
+color: rgb(70, 70, 70);
+border: 2px;
+border-radius: 15px</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="show_info_button">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>180</y>
+     <width>331</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(254, 127, 94);
+color: 'white';
+border: 2px solid rgb(254, 127, 94);
+border-radius: 15px
+}
+
+QPushButton:pressed {
+background: rgb(234, 107, 74)
+}</string>
+   </property>
+   <property name="text">
+    <string>Просмотр информации</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="show_part_button">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>240</y>
+     <width>331</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(254, 127, 94);
+color: 'white';
+border: 2px solid rgb(254, 127, 94);
+border-radius: 15px
+}
+
+QPushButton:pressed {
+background: rgb(234, 107, 74)
+}</string>
+   </property>
+   <property name="text">
+    <string>Просмотр партнеров и льгот</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delete_btn">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>300</y>
+     <width>150</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(255, 67, 53);
+color: rgb(40, 40, 40);
+border: 3px solid rgb(255, 67, 53);
+border-radius: 25px
+}
+
+QPushButton:pressed {
+background: rgb(225, 37, 23);
+border: 3px solid rgb(225, 37, 23)
+}</string>
+   </property>
+   <property name="text">
+    <string>Удалить
+пользователя</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="accept_btn">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>300</y>
+     <width>150</width>
+     <height>150</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(143, 255, 116);
+color: rgb(40, 40, 40);
+border: 3px solid rgb(143, 255, 116);
+border-radius: 25px
+}
+
+QPushButton:pressed {
+background: rgb(113, 225, 86);
+border: 3px solid rgb(113, 225, 86)
+}</string>
+   </property>
+   <property name="text">
+    <string>Подтвердить
+аккаунт
+пользователя</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="new_user_btn">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>470</y>
+     <width>331</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Gill Sans</family>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(254, 127, 94);
+color: 'white';
+border: 2px solid rgb(254, 127, 94);
+border-radius: 15px
+}
+
+QPushButton:pressed {
+background: rgb(234, 107, 74)
+}</string>
+   </property>
+   <property name="text">
+    <string>Добавить пользователя</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
