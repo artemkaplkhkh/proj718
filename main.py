@@ -1,8 +1,14 @@
 import sys
 import sqlite3
+import qrcode
+from random import choice
+
+from qrcode.image.styledpil import StyledPilImage
+from qrcode.image.styles.colormasks import RadialGradiantColorMask
+from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 
 from PyQt5 import uic
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QDialog, QPushButton, QLabel, QVBoxLayout, QLineEdit
 
 
@@ -139,6 +145,7 @@ class Home_Window(QWidget):
             ex.home_wnd.close()
             self.qr_wd = QR_Wind()
             self.qr_wd.show()
+
         else:
             dialog = QDialog()
             dialog.resize(350, 100)
@@ -220,8 +227,27 @@ class QR_Wind(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi('qr_UI.ui', self)
-
         self.home_btn.clicked.connect(self.back_home_func)
+
+        qr = qrcode.QRCode(version=1,
+                           box_size=5,
+                           border=5)
+        con = sqlite3.connect('profsouz.db')
+        cur = con.cursor()
+        res = cur.execute(f'SELECT fio, lgots, doljnost FROM people WHERE email == "{ex.email_sing_in}"').fetchall()[0]
+        name = res[0]
+        dol = res[-1]
+        lst_lg = [f'{i[0]} - {i[1]}' for i in eval(res[1])]
+        qr.add_data(f'ФИО: {name}\nДолжность: {dol}\nЛьготы: {choice(lst_lg)}')
+        cur.close()
+        con.close()
+        qr.make(fit=True)
+        self.img = qr.make_image(image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer(),
+                                 color_mask=RadialGradiantColorMask(edge_color=(249, 101, 58),
+                                                                    center_color=(249, 101, 58)))
+        self.img.save('qrw.png')
+        self.qr_lab.setPixmap(QPixmap('qrw.png'))
+
 
     def back_home_func(self):
         ex.home_wnd.qr_wd.close()
@@ -273,6 +299,9 @@ class Admin_UI_Work(QWidget):
         uic.loadUi('admin_ui_work.ui', self)
         self.show_info_button.clicked.connect(self.show_info_func)
         self.show_part_button.clicked.connect(self.lgots_and_parts_func)
+        self.accept_btn.clicked.connect(self.accept_fnc)
+        self.delete_btn.clicked.connect(self.delete_fnc)
+        self.new_user_btn.clicked.connect(self.new_user_fnc)
 
         con = sqlite3.connect('profsouz.db')
         cur = con.cursor()
@@ -283,6 +312,67 @@ class Admin_UI_Work(QWidget):
         self.user_name.addItems(self.list_fio)
         cur.close()
         con.close()
+
+    def new_user_fnc(self):
+        ex.sia.auiw.close()
+        self.nu = New_user_UI()
+        self.nu.show()
+
+    def delete_fnc(self):
+        def yes_fnc():
+            con = sqlite3.connect('profsouz.db')
+            cur = con.cursor()
+            res = cur.execute(f'DELETE FROM people WHERE fio == "{self.user_name.currentText()}"')
+            res = cur.execute(f'SELECT fio FROM people').fetchall()
+            self.list_fio = []
+            self.user_name.clear()
+            for i in res:
+                self.list_fio.append(i[0])
+            self.user_name.addItems(self.list_fio)
+            con.commit()
+            cur.close()
+            con.close()
+            dialog.close()
+
+        dialog = QDialog()
+        dialog.setGeometry(200, 200, 400, 150)
+        stat_lab = QLabel(dialog)
+        stat_lab.setText('Вы уверены, что хотите удалять аккаунт пользователя?')
+        stat_lab.move(10, 20)
+        yes_btn = QPushButton(dialog)
+        yes_btn.setText('Да')
+        no_btn = QPushButton(dialog)
+        no_btn.setText('Нет')
+        yes_btn.move(130, 50)
+        no_btn.move(200, 50)
+        yes_btn.clicked.connect(yes_fnc)
+        no_btn.clicked.connect(lambda: dialog.close())
+        dialog.exec_()
+
+    def accept_fnc(self):
+        def yes_fnc():
+            con = sqlite3.connect('profsouz.db')
+            cur = con.cursor()
+            res = cur.execute(f'UPDATE people SET autent = "True" WHERE fio == "{self.user_name.currentText()}"')
+            con.commit()
+            cur.close()
+            con.close()
+            dialog.close()
+
+        dialog = QDialog()
+        dialog.setGeometry(200, 200, 400, 150)
+        stat_lab = QLabel(dialog)
+        stat_lab.setText('Вы уверены, что хотите подтвердить аккаунт пользователя?')
+        stat_lab.move(10, 20)
+        yes_btn = QPushButton(dialog)
+        yes_btn.setText('Да')
+        no_btn = QPushButton(dialog)
+        no_btn.setText('Нет')
+        yes_btn.move(130, 50)
+        no_btn.move(200, 50)
+        yes_btn.clicked.connect(yes_fnc)
+        no_btn.clicked.connect(lambda: dialog.close())
+        dialog.exec_()
 
     def lgots_and_parts_func(self):
         ex.sia.auiw.close()
@@ -352,6 +442,8 @@ class Lgots_and_Parts_UI(QWidget):
         self.back_btn.clicked.connect(self.back_fnc)
         self.new_part_lgot.clicked.connect(self.new_lg_fnc)
 
+        self.fio_lab.setText(ex.sia.auiw.user)
+
         con = sqlite3.connect('profsouz.db')
         cur = con.cursor()
         lgots = cur.execute(f'SELECT lgots FROM people WHERE fio == "{ex.sia.auiw.user}"').fetchall()
@@ -368,6 +460,7 @@ class Lgots_and_Parts_UI(QWidget):
             self.lgots_area.setWidget(wid)
             self.lgots_area.setWidgetResizable(True)
         else:
+            self.lgots = []
             lg_lb = QLabel(' Упс... Похоже, у пользователя нет партнеров и льгот!')
             lg_lb.setStyleSheet('color: rgb(70, 70, 70); border: 0px')
             lg_lb.setFont(QFont('Gill Sans', 18))
@@ -375,6 +468,26 @@ class Lgots_and_Parts_UI(QWidget):
         con.close()
 
     def new_lg_fnc(self):
+        def ok_fnc():
+            self.lgots.append([new_part.text(), new_lgot.text()])
+            con = sqlite3.connect('profsouz.db')
+            cur = con.cursor()
+            res = cur.execute(f'UPDATE people SET lgots = "{str(self.lgots)}" WHERE fio == "{ex.sia.auiw.user}"')
+            lay_lgots = QVBoxLayout()
+            for i in self.lgots:
+                lg_lb = QLabel(f'{i[0]} - {i[1]}')
+                lg_lb.setStyleSheet('color: rgb(70, 70, 70); border: 0px')
+                lg_lb.setFont(QFont('Gill Sans', 18))
+                lay_lgots.addWidget(lg_lb)
+            wid = QWidget()
+            wid.setLayout(lay_lgots)
+            self.lgots_area.setWidget(wid)
+            self.lgots_area.setWidgetResizable(True)
+            con.commit()
+            cur.close()
+            con.close()
+            dialog.close()
+
         dialog = QDialog()
         dialog.resize(400, 150)
         new_part = QLineEdit(dialog)
@@ -390,10 +503,41 @@ class Lgots_and_Parts_UI(QWidget):
         ok_btn = QPushButton(dialog)
         ok_btn.setText('Добавить')
         ok_btn.move(200, 100)
+        ok_btn.clicked.connect(ok_fnc)
         dialog.exec_()
 
     def back_fnc(self):
         ex.sia.auiw.al.close()
+        ex.sia.auiw.show()
+
+
+class New_user_UI(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('add_user.ui', self)
+
+        self.save.clicked.connect(self.save_new_user_fnc)
+        self.back_btn.clicked.connect(self.back_fnc)
+
+    def save_new_user_fnc(self):
+        con = sqlite3.connect('profsouz.db')
+        cur = con.cursor()
+        res = cur.execute(f'INSERT INTO people(fio, date_born, date_enter, date_leave, doljnost, email, password) '
+                          f'VALUES("{self.fio_edit.text()}", "{self.date_born_edit.text()}", "{self.date_enter_edit.text()}", '
+                          f'"{self.pol_edit.text()}", "{self.dolj_edit.text()}", "{self.email_edit.text()}", '
+                          f'"{self.password_edit.text()}")')
+        res = cur.execute(f'SELECT fio FROM people').fetchall()
+        self.list_fio = []
+        ex.sia.auiw.user_name.clear()
+        for i in res:
+            self.list_fio.append(i[0])
+        ex.sia.auiw.user_name.addItems(self.list_fio)
+        con.commit()
+        cur.close()
+        con.close()
+
+    def back_fnc(self):
+        ex.sia.auiw.nu.close()
         ex.sia.auiw.show()
 
 

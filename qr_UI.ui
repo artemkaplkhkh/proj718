@@ -42,10 +42,10 @@ color: 'white'</string>
   <widget class="QLabel" name="qr_lab">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>20</x>
      <y>100</y>
-     <width>300</width>
-     <height>300</height>
+     <width>350</width>
+     <height>350</height>
     </rect>
    </property>
    <property name="text">
